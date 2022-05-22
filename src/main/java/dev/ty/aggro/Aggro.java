@@ -5,6 +5,7 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.GameRuleChangeEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Mod(modid = Aggro.MOD_ID)
 public class Aggro {
     public static final String MOD_ID = "aggro";
-    public static boolean defaultValue = false;
+    public static final boolean defaultValue = false;
 
     private static final String ruleName = "disableMobAggro";
 
@@ -40,6 +41,13 @@ public class Aggro {
         if (!event.getRuleName().equals(ruleName)) return;
 
         setValue(event.getServer().getPlayerList(), event.getRules());
+    }
+
+    @SubscribeEvent
+    public void breakSpeed(PlayerEvent.BreakSpeed event) {
+        if (event.getEntityPlayer().isInWater() || !event.getEntityPlayer().onGround) {
+            event.setNewSpeed(event.getOriginalSpeed() * 5);
+        }
     }
 
     private void setValue(PlayerList list, GameRules rules) {
