@@ -45,9 +45,8 @@ public class Aggro {
 
     @SubscribeEvent
     public void breakSpeed(PlayerEvent.BreakSpeed event) {
-        if (event.getEntityPlayer().isInWater() || !event.getEntityPlayer().onGround) {
+        if (event.getEntityPlayer().isInWater() || !event.getEntityPlayer().onGround)
             event.setNewSpeed(event.getOriginalSpeed() * 5);
-        }
     }
 
     private void setValue(PlayerList list, GameRules rules) {
